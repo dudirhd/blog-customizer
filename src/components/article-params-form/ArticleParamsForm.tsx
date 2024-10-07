@@ -1,6 +1,6 @@
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
 import { Text } from 'src/ui/text';
@@ -16,6 +16,7 @@ import {
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
 
 export const ArticleParamsForm = ({
 	dataReturn,
@@ -24,6 +25,7 @@ export const ArticleParamsForm = ({
 }) => {
 	//Открытие асайда
 	const [isOpenedAside, setIsOpenedAside] = useState(false);
+	const rootRef = useRef<HTMLDivElement | null>(null);
 	//Изменение состояний выборов
 	const [fontFamily, setFontFamily] = useState(
 		defaultArticleState.fontFamilyOption
@@ -61,8 +63,15 @@ export const ArticleParamsForm = ({
 		dataReturn(defaultArticleState);
 		setIsOpenedAside(false);
 	};
+
+	useOutsideClickClose({
+		isOpen: isOpenedAside,
+		rootRef,
+		onChange: setIsOpenedAside,
+	});
+
 	return (
-		<>
+		<div ref={rootRef}>
 			<ArrowButton isOpen={isOpenedAside} onClick={handleClickArrowButton} />
 			<aside
 				className={clsx(styles.container, {
@@ -114,6 +123,6 @@ export const ArticleParamsForm = ({
 					</div>
 				</form>
 			</aside>
-		</>
+		</div>
 	);
 };
